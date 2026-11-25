@@ -1,1 +1,194 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistem Pengurusan PPRS GIATMARA</title>
+<style>
+:root{--navy:#10243a;--blue:#1769aa;--teal:#138579;--bg:#f3f6fa;--line:#dbe3ec;--ink:#172536;--muted:#617184;--white:#fff;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 "Segoe UI",Arial,sans-serif}
+header{background:linear-gradient(120deg,#10243a,#1769aa);color:white;padding:22px 26px}
+header h1{font-size:22px;margin:0 0 4px}header p{margin:0;color:#d7e7f6}
+.shell{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 90px)}
+nav{background:#fff;border-right:1px solid var(--line);padding:16px 10px}
+nav button{width:100%;text-align:left;border:0;background:transparent;padding:11px 12px;margin:3px 0;border-radius:8px;color:#31465c;cursor:pointer;font-weight:600}
+nav button.active,nav button:hover{background:#eaf3fb;color:#125b94}
+main{padding:22px;max-width:1500px;width:100%;margin:auto}
+.page{display:none}.page.active{display:block}
+h2{margin:0 0 14px;font-size:21px;color:var(--navy)}h3{margin:0 0 12px;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 2px 7px #142d4510}
+.stat{font-size:26px;font-weight:750;color:var(--navy);margin-top:5px}.muted{color:var(--muted)}.small{font-size:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
+button,.btn{border:0;border-radius:8px;padding:10px 14px;background:var(--blue);color:white;font-weight:650;cursor:pointer}
+button.secondary,.btn.secondary{background:#e9eff5;color:#24415c}button.danger{background:#b42318}button.teal{background:var(--teal)}
+input,select,textarea{width:100%;border:1px solid #cbd6e2;border-radius:7px;padding:9px 10px;font:inherit;background:#fff;color:var(--ink)}
+label{display:block;font-weight:650;font-size:12px;color:#42566c;margin:0 0 5px}
+.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0}
+.field.full{grid-column:1/-1}.field.two{grid-column:span 2}
+table{border-collapse:collapse;width:100%;background:white;font-size:13px}th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}th{background:#edf3f8;color:#233d56}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:9px;margin-top:12px}
+.notice{padding:12px 14px;border-radius:9px;background:#fff8e6;border:1px solid #f0d58b;color:#73540b;margin:12px 0}
+.success{background:#eaf7f1;border-color:#b8e2cf;color:#145c3c}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.tag{display:inline-block;padding:3px 8px;border-radius:20px;background:#eaf3fb;color:#125b94;font-size:11px;font-weight:700}
+.hidden{display:none!important}.doc{background:white;padding:28px;max-width:900px;margin:12px auto;border:1px solid #d9dfe6}
+.doc h2,.doc h3{text-align:center}.doc p{margin:12px 0}.docline{border-bottom:1px dotted #333;display:inline-block;min-width:180px}
+footer{padding:16px;color:#6c7b8b;text-align:center}
+@media(max-width:900px){.shell{grid-template-columns:1fr}nav{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}nav button{min-width:max-content}.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:repeat(2,1fr)}main{padding:14px}}
+@media(max-width:560px){.grid,.formgrid{grid-template-columns:1fr}.field.two{grid-column:auto}header{padding:17px}header h1{font-size:18px}}
+@media print{header,nav,.no-print,footer{display:none!important}.shell{display:block}main{padding:0;max-width:none}.page{display:none!important}#printArea{display:block!important}.doc{border:0;margin:0;max-width:none;padding:12mm;page-break-after:always}body{background:#fff}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Sistem Pengurusan Program Perumahan Rakyat Sejahtera (PPRS)</h1>
+  <p>GIATMARA · Pengurusan penerima, kontraktor, projek dan penjanaan dokumen berpusat</p>
+</header>
+<div class="shell">
+<nav class="no-print">
+  <button class="active" data-page="dashboard">▦ Dashboard</button>
+  <button data-page="projects">▤ Rekod Projek</button>
+  <button data-page="entry">＋ Maklumat Projek</button>
+  <button data-page="documents">▣ Jana Dokumen</button>
+  <button data-page="backup">⇅ Backup & Tetapan</button>
+</nav>
+<main>
+<section id="dashboard" class="page active">
+  <div class="row between"><div><h2>Dashboard PPRS</h2><div class="muted">Ringkasan rekod yang disimpan dalam komputer ini.</div></div><button onclick="newProject()">＋ Projek Baharu</button></div>
+  <div class="grid" style="margin-top:16px">
+    <div class="card"><div class="muted">Jumlah projek</div><div class="stat" id="sTotal">0</div></div>
+    <div class="card"><div class="muted">Bina Baharu</div><div class="stat" id="sBB">0</div></div>
+    <div class="card"><div class="muted">Baik Pulih</div><div class="stat" id="sBP">0</div></div>
+    <div class="card"><div class="muted">Nilai kontrak</div><div class="stat" id="sValue">RM0.00</div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><div class="row between"><h3>Projek terkini</h3><button class="secondary" onclick="showPage('projects')">Lihat semua</button></div><div id="recent"></div></div>
+  <div class="notice" style="margin-top:14px">Data disimpan dalam storan pelayar pada komputer/peranti ini. Buat backup JSON secara berkala. Versi ini berfungsi tanpa internet selepas fail dibuka.</div>
+</section>
 
+<section id="projects" class="page">
+  <div class="row between"><div><h2>Rekod Projek</h2><div class="muted">Cari, kemas kini atau jana dokumen bagi setiap projek.</div></div><button onclick="newProject()">＋ Tambah Projek</button></div>
+  <div class="row" style="margin-top:12px"><input id="search" placeholder="Cari nama penerima, daerah, kontraktor atau No. SAP..." oninput="renderProjects()"></div>
+  <div class="tablewrap"><table><thead><tr><th>No. SAP / Kod</th><th>Penerima</th><th>Daerah</th><th>Jenis</th><th>Kontraktor</th><th>Nilai (RM)</th><th>Tindakan</th></tr></thead><tbody id="projectRows"></tbody></table></div>
+</section>
+
+<section id="entry" class="page">
+  <div class="row between"><div><h2 id="entryTitle">Maklumat Projek Baharu</h2><div class="muted">Isi maklumat sekali. Medan bertanda * diperlukan untuk dokumen berkaitan.</div></div><span class="tag">REKOD INDUK</span></div>
+  <form id="projectForm" onsubmit="saveProject(event)">
+    <input type="hidden" id="p_id">
+    <div class="card" style="margin-top:12px"><h3>A. Maklumat Program</h3><div class="formgrid">
+      <div class="field"><label>Tahun Projek *</label><input id="p_year" required placeholder="2026"></div>
+      <div class="field"><label>Fasa</label><input id="p_phase" placeholder="Fasa 1"></div>
+      <div class="field"><label>No. SAP</label><input id="p_sap"></div>
+      <div class="field"><label>Kod Program</label><input id="p_code"></div>
+      <div class="field"><label>Negeri</label><input id="p_state" value="Johor"></div>
+      <div class="field"><label>Daerah</label><input id="p_district" placeholder="Contoh: Segamat"></div>
+      <div class="field"><label>Jenis bantuan *</label><select id="p_type"><option>Bina Baharu (BB)</option><option>Baik Pulih (BP)</option></select></div>
+      <div class="field"><label>Status projek</label><select id="p_status"><option>Belum Mula</option><option>Dalam Pelaksanaan</option><option>Lewat</option><option>Siap</option><option>Ditamatkan</option></select></div>
+      <div class="field"><label>Kod / No. Rujukan</label><input id="p_ref"></div>
+    </div></div>
+    <div class="card" style="margin-top:12px"><h3>B. Maklumat Penerima</h3><div class="formgrid">
+      <div class="field"><label>Nama penerima *</label><input id="p_recipient" required></div>
+      <div class="field"><label>No. Kad Pengenalan</label><input id="p_ic"></div>
+      <div class="field"><label>No. telefon</label><input id="p_phone"></div>
+      <div class="field full"><label>Alamat penuh</label><textarea id="p_address" rows="2"></textarea></div>
+      <div class="field"><label>Status pekerjaan</label><select id="p_employment"><option>Bekerja</option><option>Bekerja sendiri</option><option>Tidak bekerja</option></select></div>
+      <div class="field"><label>Pekerjaan</label><input id="p_job"></div>
+      <div class="field"><label>Pendapatan bulanan (RM)</label><input id="p_income" type="number" min="0" step="0.01"></div>
+      <div class="field"><label>Nama pengesah pendapatan</label><input id="p_verifier"></div>
+      <div class="field"><label>Jawatan pengesah</label><input id="p_verifier_role" placeholder="Ketua Kampung / Ketua Penduduk"></div>
+      <div class="field"><label>No. KP pengesah</label><input id="p_verifier_ic"></div>
+    </div></div>
+    <div class="card" style="margin-top:12px"><h3>C. Maklumat Kontraktor & Kontrak</h3><div class="formgrid">
+      <div class="field"><label>Nama kontraktor / syarikat</label><input id="p_contractor"></div>
+      <div class="field"><label>No. pendaftaran syarikat</label><input id="p_company_no"></div>
+      <div class="field"><label>Alamat kontraktor</label><input id="p_contractor_address"></div>
+      <div class="field"><label>Nama pegawai kontraktor</label><input id="p_contractor_contact"></div>
+      <div class="field"><label>Telefon kontraktor</label><input id="p_contractor_phone"></div>
+      <div class="field"><label>Harga kontrak (RM)</label><input id="p_contract" type="number" min="0" step="0.01"></div>
+      <div class="field"><label>Tarikh lantikan / mula</label><input id="p_start" type="date"></div>
+      <div class="field"><label>Tarikh siap kontrak</label><input id="p_end" type="date"></div>
+      <div class="field"><label>Tarikh siap sebenar</label><input id="p_actual" type="date"></div>
+    </div></div>
+    <div class="card" style="margin-top:12px"><h3>D. Pegawai & Pengesahan</h3><div class="formgrid">
+      <div class="field"><label>Pegawai projek khas (PPK)</label><input id="p_ppk"></div>
+      <div class="field"><label>No. telefon PPK</label><input id="p_ppk_phone"></div>
+      <div class="field"><label>Pengarah Negeri</label><input id="p_director"></div>
+      <div class="field"><label>Agensi pelaksana</label><input id="p_agency" value="GIATMARA"></div>
+      <div class="field"><label>Agensi pembayar</label><input id="p_payer"></div>
+      <div class="field"><label>Catatan</label><input id="p_notes"></div>
+    </div></div>
+    <div class="row" style="margin-top:14px"><button type="submit">Simpan Rekod Projek</button><button type="button" class="secondary" onclick="resetForm()">Kosongkan</button><button type="button" class="secondary" onclick="showPage('projects')">Kembali</button></div>
+  </form>
+</section>
+
+<section id="documents" class="page">
+  <h2>Jana Dokumen Automatik</h2>
+  <div class="card"><div class="formgrid" style="margin:0">
+    <div class="field two"><label>Pilih projek</label><select id="docProject" onchange="updateDocInfo()"></select></div>
+    <div class="field"><label>Jenis dokumen</label><select id="docType">
+      <option value="all">Set dokumen tersedia</option>
+      <option value="income">Lampiran H – Pengesahan Pendapatan</option>
+      <option value="sap">Lampiran J – Contoh SAP (draf projek)</option>
+      <option value="warning">Notis Peringatan Kedua</option>
+      <option value="schedule">Jadual Perancangan Kerja</option>
+      <option value="progress">Carta Kemajuan Projek</option>
+      <option value="eot">Panduan Carta Alir EOT</option>
+    </select></div>
+  </div><div id="docInfo" class="muted small"></div>
+  <div class="row" style="margin-top:12px"><button onclick="generateDocs()">Jana / Pratonton</button><button class="secondary" onclick="window.print()">Cetak / Simpan PDF</button></div>
+  <div class="notice">Penjana ini mengisi maklumat projek ke dalam draf dokumen. Semak semula kandungan, kelulusan, tandatangan dan cop rasmi sebelum digunakan. Dokumen yang memerlukan butiran tambahan akan menunjukkan ruang kosong untuk dilengkapkan.</div>
+  </div>
+  <div id="docPreview"></div>
+</section>
+
+<section id="backup" class="page">
+  <h2>Backup, Import & Tetapan</h2>
+  <div class="grid">
+    <div class="card"><h3>Eksport backup</h3><p class="muted">Simpan semua rekod projek sebagai fail JSON untuk dipindahkan atau dipulihkan.</p><button onclick="exportData()">Muat turun backup</button></div>
+    <div class="card"><h3>Import backup</h3><p class="muted">Pulihkan rekod daripada fail backup JSON terdahulu.</p><input type="file" id="importFile" accept=".json,application/json"><button style="margin-top:8px" onclick="importData()">Import data</button></div>
+    <div class="card"><h3>Data peranti</h3><p class="muted">Rekod disimpan dalam pelayar semasa. Jangan padam data laman sebelum membuat backup.</p><div class="tag" id="recordCount">0 rekod</div></div>
+    <div class="card"><h3>Maklumat versi</h3><p class="muted">Prototaip operasi PPRS · Versi 1.0 · Offline-ready</p><button class="secondary" onclick="window.print()">Cetak paparan</button></div>
+  </div>
+  <div class="notice">Untuk penggunaan ramai pegawai melalui internet secara serentak, sistem ini perlu dinaik taraf kepada pelayan dan pangkalan data berpusat. Fail ini belum mempunyai fungsi akaun pengguna, penyegerakan cloud atau kawalan akses pelbagai peranan.</div>
+</section>
+<div id="printArea" class="hidden"></div>
+</main></div>
+<footer class="no-print">Sistem Pengurusan PPRS GIATMARA · Simpan backup secara berkala</footer>
+<script>
+const KEY='pprs_giatmara_v1';
+let projects=JSON.parse(localStorage.getItem(KEY)||'[]');
+const fields=['year','phase','sap','code','state','district','type','status','ref','recipient','ic','phone','address','employment','job','income','verifier','verifier_role','verifier_ic','contractor','company_no','contractor_address','contractor_contact','contractor_phone','contract','start','end','actual','ppk','ppk_phone','director','agency','payer','notes'];
+const $=id=>document.getElementById(id);
+function val(k){return ($('p_'+k)?.value||'').trim()}
+function money(n){return 'RM '+Number(n||0).toLocaleString('ms-MY',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmtDate(s){if(!s)return '................................';let d=new Date(s+'T00:00:00');return d.toLocaleDateString('ms-MY')}
+function persist(){localStorage.setItem(KEY,JSON.stringify(projects));renderAll()}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));if(id==='documents')fillDocSelect()}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+function newProject(){resetForm();showPage('entry')}
+function resetForm(){ $('projectForm').reset();$('p_id').value='';$('p_state').value='Johor';$('p_agency').value='GIATMARA';$('entryTitle').textContent='Maklumat Projek Baharu'}
+function saveProject(e){e.preventDefault();let p={};fields.forEach(k=>p[k]=val(k));p.id=$('p_id').value||('PPRS-'+Date.now());p.updated=new Date().toISOString();let i=projects.findIndex(x=>x.id===p.id);if(i>=0)projects[i]=p;else projects.unshift(p);persist();resetForm();showPage('projects');alert('Rekod projek berjaya disimpan dalam peranti ini.')}
+function editProject(id){let p=projects.find(x=>x.id===id);if(!p)return;fields.forEach(k=>$('p_'+k).value=p[k]||'');$('p_id').value=p.id;$('entryTitle').textContent='Kemaskini Projek';showPage('entry')}
+function deleteProject(id){if(confirm('Padam rekod projek ini? Tindakan ini tidak boleh dibatalkan.')){projects=projects.filter(x=>x.id!==id);persist()}}
+function renderProjects(){let q=($('search')?.value||'').toLowerCase();let rows=projects.filter(p=>[p.sap,p.code,p.recipient,p.district,p.contractor].join(' ').toLowerCase().includes(q));$('projectRows').innerHTML=rows.map(p=>`<tr><td>${esc(p.sap||p.code||'-')}</td><td><b>${esc(p.recipient)}</b><div class="small muted">${esc(p.ic)}</div></td><td>${esc(p.district)}</td><td>${esc(p.type)}</td><td>${esc(p.contractor)}</td><td>${money(p.contract)}</td><td><div class="actions"><button class="secondary" onclick="editProject('${p.id}')">Edit</button><button class="teal" onclick="quickDoc('${p.id}')">Dokumen</button><button class="danger" onclick="deleteProject('${p.id}')">Padam</button></div></td></tr>`).join('')||'<tr><td colspan="7" class="muted">Belum ada rekod projek.</td></tr>'}
+function renderAll(){$('sTotal').textContent=projects.length;$('sBB').textContent=projects.filter(p=>p.type.startsWith('Bina')).length;$('sBP').textContent=projects.filter(p=>p.type.startsWith('Baik')).length;$('sValue').textContent=money(projects.reduce((a,p)=>a+Number(p.contract||0),0));$('recordCount').textContent=projects.length+' rekod';renderProjects();$('recent').innerHTML=projects.slice(0,5).map(p=>`<div class="row between" style="padding:9px 0;border-bottom:1px solid #edf1f5"><div><b>${esc(p.recipient)}</b><div class="small muted">${esc(p.district)} · ${esc(p.type)} · ${esc(p.status)}</div></div><b>${money(p.contract)}</b></div>`).join('')||'<p class="muted">Belum ada projek didaftarkan.</p>';fillDocSelect()}
+function fillDocSelect(){let s=$('docProject');if(!s)return;let old=s.value;s.innerHTML=projects.map(p=>`<option value="${p.id}">${esc(p.recipient)} — ${esc(p.sap||p.code||p.id)}</option>`).join('')||'<option value="">Tiada projek</option>';if(projects.some(p=>p.id===old))s.value=old;updateDocInfo()}
+function current(){return projects.find(p=>p.id===$('docProject').value)}
+function updateDocInfo(){let p=current();$('docInfo').textContent=p?`${p.type} · ${p.district}, ${p.state} · Kontrak ${money(p.contract)}`:'Daftar projek dahulu untuk menjana dokumen.'}
+function quickDoc(id){showPage('documents');$('docProject').value=id;updateDocInfo();generateDocs()}
+function signature(title){return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:35px;margin-top:55px"><div>........................................<br>${title}<br>(Tandatangan & Cop Rasmi)<br>Nama: __________________<br>Tarikh: ________________</div><div>........................................<br>Pengesah / Pegawai<br>(Tandatangan & Cop Rasmi)<br>Nama: __________________<br>Tarikh: ________________</div></div>`}
+function docHead(title,sub='PROGRAM PERUMAHAN RAKYAT SEJAHTERA (PPRS)'){return `<div style="text-align:center"><b>GIATMARA</b><h2>${title}</h2><b>${sub}</b><hr></div>`}
+function incomeDoc(p){return `<article class="doc">${docHead('BORANG PENGESAHAN PENDAPATAN')}<h3>SURAT AKUAN PENGESAHAN PENDAPATAN</h3><p>Saya <u>${esc(p.recipient)}</u> No. KP <u>${esc(p.ic)}</u></p><p>beralamat <u>${esc(p.address)}</u></p><p>Dengan ini mengesahkan bahawa saya <u>${esc(p.employment)}</u> sebagai <u>${esc(p.job)}</u> dengan pendapatan sebanyak <u>${money(p.income)}</u> sebulan.</p><p>Tandatangan: ____________________</p><p>No. Kad Pengenalan: ${esc(p.ic)}</p><p>Tarikh: ____________________</p><br><b>Pengesahan dari Ketua Kampung / Ketua Penduduk / Pesuruhjaya Sumpah</b><p>Saya <u>${esc(p.verifier)}</u> No. KP <u>${esc(p.verifier_ic)}</u></p><p>Dengan ini mengesahkan bahawa penama sememangnya tinggal di kawasan ini dan pendapatannya adalah seperti yang dinyatakan di atas.</p><p>Jawatan: ${esc(p.verifier_role)}</p><p>Tandatangan: ____________________　 Cop Rasmi:</p></article>`}
+function sapDoc(p){return `<article class="doc">${docHead('SURAT ARAHAN PELAKSANAAN (SAP)')}<p style="text-align:right">Rujukan: ${esc(p.sap)}<br>Tarikh: __________________</p><p><b>KEPADA:</b><br>${esc(p.agency)}<br>Agensi Pelaksana / Pembayar<br>${esc(p.state)}</p><p>Tuan,</p><h3>SURAT ARAHAN PELAKSANAAN PPRS BAGI ${esc(p.state).toUpperCase()} TAHUN ${esc(p.year)}</h3><p>Dengan segala hormatnya saya diarah merujuk kepada perkara di atas.</p><p>Dimaklumkan bahawa pelaksanaan projek PPRS bagi maklumat projek seperti berikut:</p><table><tr><th>Perkara</th><th>Maklumat</th></tr><tr><td>Daerah</td><td>${esc(p.district)}</td></tr><tr><td>Jenis bantuan</td><td>${esc(p.type)}</td></tr><tr><td>Nama penerima</td><td>${esc(p.recipient)}</td></tr><tr><td>Kontraktor</td><td>${esc(p.contractor)}</td></tr><tr><td>Nilai kontrak</td><td>${money(p.contract)}</td></tr><tr><td>Tarikh mula / siap</td><td>${fmtDate(p.start)} hingga ${fmtDate(p.end)}</td></tr></table><p>Pelaksanaan hendaklah mematuhi tatacara PPRS, prosedur kewangan dan perolehan yang sedang berkuat kuasa. Tempoh rujukan dalam contoh SAP: Baik Pulih 4 minggu dan Bina Baharu 12 minggu daripada tarikh lantikan kontraktor. Pelaporan prestasi fizikal dan perbelanjaan dibuat secara dwimingguan pada 1 dan 15 haribulan.</p><p>Nota: Draf ini mengisi butiran projek; kuota, peruntukan keseluruhan, nombor rujukan kementerian dan pegawai penandatangan perlu disahkan sebelum dikeluarkan.</p>${signature('Pegawai / Penyedia')}</article>`}
+function warningDoc(p){return `<article class="doc">${docHead('NOTIS PERINGATAN KEDUA')}<p><b>SYARIKAT:</b> ${esc(p.contractor)}<br><b>ALAMAT:</b> ${esc(p.contractor_address)}</p><p><b>NOTIS PERINGATAN BERKENAAN STATUS KEMAJUAN KERJA BAGI ${esc(p.recipient)} (${esc(p.address)}).</b></p><p>Untuk makluman tuan, pihak tuan telah lewat dalam menyiapkan projek Program Perumahan Rakyat Sejahtera (PPRS) bagi penerima di atas seperti yang telah ditetapkan dalam Surat Setuju Terima (SST), iaitu tarikh mula ${fmtDate(p.start)} dan tarikh siap ${fmtDate(p.end)}.</p><p>Oleh hal demikian, mohon pihak tuan untuk menyiapkan projek tersebut mengikut masa yang telah ditetapkan. Jika masih tiada tindakan dalam kemajuan kerja ini, pihak GIATMARA boleh mengambil tindakan mengikut terma kontrak dan tatacara yang berkuat kuasa.</p><p>Jika terdapat sebarang masalah, mohon pihak tuan berbincang dengan Pegawai Projek Khas (PPK) negeri: ${esc(p.ppk)} (${esc(p.ppk_phone)}).</p><p>Sekian, terima kasih.</p><p><b>“BERKHIDMAT UNTUK NEGARA”<br>“Membandarkan Luar Bandar”</b></p>${signature('Penyedia Notis')}</article>`}
+const stages=['Insurans WC / PL','Laporan Bergambar','Kerja Penyediaan Tapak','Asas Pad','Stump','Rasuk Tanah / Ground Beam','Lantai / Floor','Apron','Tiang / Column','Dinding','Rasuk Bumbung / Roof Beam','Kerangka Bumbung','Penutup Bumbung','Bingkai Pintu & Pintu','Bingkai Tingkap & Tingkap','Pemasangan Siling','Kerja Cat Dinding','Jubin Bilik Air / Tandas','Sinki dan Kabinet Dapur','Pendawaian Elektrik','Perkakasan Elektrik','Sistem Perpaipan Air','Sistem Sanitari','Longkang 9 inci','Pemasangan Utiliti','Site Clearing'];
+function scheduleDoc(p){return `<article class="doc">${docHead('JADUAL PERANCANGAN KERJA')}<p>Tahun Projek: ${esc(p.year)}　No. SAP: ${esc(p.sap)}<br>Kod Program: ${esc(p.code)}<br>Nama Penerima: ${esc(p.recipient)}<br>Kad Pengenalan: ${esc(p.ic)}</p><table><tr><th>Bil.</th><th>Stage Work</th><th>Mula</th><th>Tamat</th><th>Catatan / Bulan</th></tr>${stages.map((s,i)=>`<tr><td>${i+1}</td><td>${s}</td><td></td><td></td><td></td></tr>`).join('')}</table>${signature('Kontraktor / Pegawai Program Khas')}</article>`}
+function progressDoc(p){let amount=Number(p.contract||0);return `<article class="doc">${docHead('CARTA KEMAJUAN PROJEK')}<p>Daerah: ${esc(p.district)}　Negeri: ${esc(p.state)}<br>Nama Peserta: ${esc(p.recipient)}<br>Alamat: ${esc(p.address)}<br>Nama Kontraktor: ${esc(p.contractor)}<br>Tarikh Mula: ${fmtDate(p.start)}　Tarikh Siap: ${fmtDate(p.end)}<br>Harga Kontrak: <b>${money(amount)}</b></p><table><tr><th>Bil.</th><th>Perkara</th><th>Wajaran (%)</th><th>Kemajuan sebenar (%)</th><th>Catatan</th></tr>${stages.map((s,i)=>`<tr><td>${i+1}</td><td>${s}</td><td></td><td></td><td></td></tr>`).join('')}</table><p><b>Nota:</b> Isi wajaran dan kemajuan sebenar berdasarkan pengukuran serta pengesahan pegawai. Carta contoh sumber mengandungi nilai sampel; angka tidak disalin sebagai prestasi projek sebenar.</p>${signature('Pemantauan / Pegawai Pemeriksa')}</article>`}
+function eotDoc(p){return `<article class="doc">${docHead('PANDUAN CARTA ALIR PERMOHONAN LANJUT TEMPOH (EOT)')}<p><b>Projek:</b> ${esc(p.recipient)} · ${esc(p.district)}<br><b>Kontraktor:</b> ${esc(p.contractor)}<br><b>Tarikh siap kontrak:</b> ${fmtDate(p.end)}</p><div style="text-align:center;border:2px solid #1769aa;padding:15px;margin:15px">KELAMBATAN DAN LANJUTAN MASA (EOT)</div><div style="text-align:center">↓</div><div style="text-align:center;border:1px solid #9bb3ca;padding:15px;margin:10px">KELULUSAN JAWATANKUASA (AGENSI PELAKSANA)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:15px"><div style="background:#eaf7f1;padding:15px;text-align:center">LULUS<br>↓<br>Kelambatan dan Lanjutan Masa (EOT)<br>↓<br>Siap Kerja</div><div style="background:#fff1ed;padding:15px;text-align:center">GAGAL<br>↓<br>Notis untuk kenaan LAD<br>↓<br>Certificate of Non Completion (CNC)<br>↓<br>Penamatan Kerja</div></div><p class="small muted">Carta alir ini dipaparkan sebagai panduan daripada Lampiran L. Ikuti proses dan kelulusan rasmi agensi.</p></article>`}
+function generateDocs(){let p=current();if(!p){$('docPreview').innerHTML='<div class="notice">Sila daftar dan pilih projek terlebih dahulu.</div>';return}let t=$('docType').value;let map={income:incomeDoc,sap:sapDoc,warning:warningDoc,schedule:scheduleDoc,progress:progressDoc,eot:eotDoc};let docs=t==='all'?['income','sap','warning','schedule','progress','eot']: [t];$('docPreview').innerHTML=docs.map(k=>map[k](p)).join('');$('printArea').innerHTML=$('docPreview').innerHTML}
+function exportData(){let blob=new Blob([JSON.stringify({app:'PPRS GIATMARA',version:1,exported:new Date().toISOString(),projects},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup_pprs_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(){let f=$('importFile').files[0];if(!f){alert('Pilih fail JSON dahulu.');return}let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);let list=Array.isArray(d)?d:d.projects;if(!Array.isArray(list))throw Error('Format tidak sah');if(confirm('Import akan menggantikan rekod sedia ada. Teruskan?')){projects=list;persist();alert('Import berjaya.')}}catch(e){alert('Gagal import: '+e.message)}};r.readAsText(f)}
+renderAll();
+</script>
+</body></html>
